@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Emergencias</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="app-page">
+
+<div class="menu">
+    <button onclick="location.href='index.html'">Inicio</button>
+    <button onclick="location.href='veterinarias.html'">Veterinarias</button>
+    <button>Emergencias</button>
+    <button onclick="location.href='contactos.html'">Contactos</button>
+</div>
+<h1>Evaluar Emergencia 🚑</h1>
+
+<select id="tipoEmergencia">
+  <option value="">Seleccione una emergencia</option>
+  <option value="leve">Vómitos leves</option>
+  <option value="media">Herida</option>
+  <option value="alta">Atropello</option>
+  <option value="alta">Convulsiones</option>
+</select>
+
+<br><br>
+
+<button onclick="evaluarEmergencia()">Evaluar</button>
+
+<p id="resultado"></p>
+
+
+
+<p>Aquí podrás encontrar información sobre atención de urgencias.</p>
+
+<script>
+
+  function evaluarEmergencia() {
+    var tipo = document.getElementById("tipoEmergencia").value;
+    var resultado = document.getElementById("resultado");
+
+    if (tipo === "alta") {
+        resultado.innerHTML = `
+        🚨 URGENCIA ALTA: Dirígete inmediatamente a una veterinaria con atención de urgencias.
+        <br><br>
+        <button onclick="location.href='veterinarias.html?urgencia=alta'">Ver veterinarias disponibles</button>
+        `;
+    } 
+    else if (tipo === "media") {
+        resultado.innerHTML = `
+        ⚠️ URGENCIA MEDIA: Se recomienda atención dentro de las próximas horas.
+        <br><br>
+        <button onclick="location.href='veterinarias.html'">Ver veterinarias</button>
+        `;
+    } 
+    else if (tipo === "leve") {
+        resultado.innerHTML = `
+        ✅ URGENCIA BAJA: Puedes acudir a consulta general.
+        <br><br>
+        <button onclick="location.href='veterinarias.html'">Ver veterinarias</button>
+        `;
+    } 
+    else {
+        resultado.innerHTML = "Por favor selecciona una opción.";
+    }
+}
+</script>
+
+</body>
+</html>
+

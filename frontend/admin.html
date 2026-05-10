@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="home-page">
+
+<div class="menu">
+    <button onclick="location.href='index.html'">Inicio</button>
+</div>
+
+<h1>Panel Administrador ⚙️</h1>
+
+<div class="form-container">
+
+    <h2>Agregar / Editar Veterinaria</h2>
+
+    <input type="text" id="nombre" placeholder="Nombre">
+    <input type="text" id="direccion" placeholder="Dirección">
+    <input type="text" id="comuna" placeholder="Comuna">
+
+    <label>
+        <input type="checkbox" id="urgencias">
+        Atiende urgencias
+    </label>
+
+    <button onclick="guardarVeterinaria()">Guardar</button>
+
+</div>
+
+<hr>
+
+<h2>Veterinarias registradas</h2>
+<div id="lista-vets"></div>
+
+
+<script type="module">
+
+// 🔥 IMPORTS
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, updateDoc } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔥 CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyDMfiaPBt-Ipp0WjOFZJkFUOvKy207WDfU",
+  authDomain: "vetlinares-97df9.firebaseapp.com",
+  projectId: "vetlinares-97df9",
+  storageBucket: "vetlinares-97df9.appspot.com",
+  messagingSenderId: "450660801982",
+  appId: "1:450660801982:web:8e870d08980e22d6336def"
+};
+
+// 🔥 INIT
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// 🔥 VARIABLE PARA EDITAR
+let editandoId = null;
+
+// ================= GUARDAR =================
+window.guardarVeterinaria = async function() {
+
+    const nombre = document.getElementById("nombre").value;
+    const direccion = document.getElementById("direccion").value;
+    const comuna = document.getElementById("comuna").value;
+    const urgencias = document.getElementById("urgencias").checked;
+
+    if (!nombre || !direccion || !comuna) {
+        alert("Completa todos los campos");
+        return;
+    }
+
+    if (editandoId) {
+        // ✏️ EDITAR
+        await updateDoc(doc(db, "veterinarias", editandoId), {
+            nombre,
+            direccion,
+            comuna,
+            urgencias
+        });
+
+        alert("Veterinaria actualizada ✏️");
+        editandoId = null;
+
+    } else {
+        // ➕ CREAR
+        await addDoc(collection(db, "veterinarias"), {
+            nombre,
+            direccion,
+            comuna,
+            urgencias
+        });
+
+        alert("Veterinaria agregada ✅");
+    }
+
+    limpiarFormulario();
+    cargarVeterinarias();
+};
+
+// ================= LISTAR =================
+async function cargarVeterinarias() {
+
+    const contenedor = document.getElementById("lista-vets");
+    contenedor.innerHTML = "";
+
+    const querySnapshot = await getDocs(collection(db, "veterinarias"));
+
+    querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+
+        const div = document.createElement("div");
+        div.classList.add("card");
+
+        div.innerHTML = `
+            <h3>${data.nombre}</h3>
+            <p>${data.direccion}</p>
+            <p>${data.comuna}</p>
+            <p>${data.urgencias ? "🟢 Urgencias" : "🔴 Sin urgencias"}</p>
+
+            <button onclick="editarVet('${docSnap.id}', '${data.nombre}', '${data.direccion}', '${data.comuna}', ${data.urgencias})">Editar</button>
+            <button onclick="eliminarVet('${docSnap.id}')">Eliminar</button>
+        `;
+
+        contenedor.appendChild(div);
+    });
+}
+
+// ================= ELIMINAR =================
+window.eliminarVet = async function(id) {
+
+    if (!confirm("¿Eliminar veterinaria?")) return;
+
+    await deleteDoc(doc(db, "veterinarias", id));
+
+    alert("Eliminado ❌");
+    cargarVeterinarias();
+};
+
+// ================= EDITAR =================
+window.editarVet = function(id, nombre, direccion, comuna, urgencias) {
+
+    document.getElementById("nombre").value = nombre;
+    document.getElementById("direccion").value = direccion;
+    document.getElementById("comuna").value = comuna;
+    document.getElementById("urgencias").checked = urgencias;
+
+    editandoId = id;
+};
+
+// ================= LIMPIAR =================
+function limpiarFormulario() {
+    document.getElementById("nombre").value = "";
+    document.getElementById("direccion").value = "";
+    document.getElementById("comuna").value = "";
+    document.getElementById("urgencias").checked = false;
+}
+
+// 🔥 CARGAR AL INICIO
+cargarVeterinarias();
+
+</script>
+
+</body>
+</html>

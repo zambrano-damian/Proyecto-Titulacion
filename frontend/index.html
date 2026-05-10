@@ -1,0 +1,154 @@
+<!DOCTYPE html> 
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>VetLinares</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="home-page">
+
+<!-- ================= MENU ================= -->
+<div class="menu">
+    <button onclick="location.href='index.html'">Inicio</button>
+    <button onclick="location.href='veterinarias.html'">Veterinarias</button>
+    <button onclick="location.href='emergencias.html'">Emergencias</button>
+    <button onclick="location.href='contactos.html'">Contactos</button>
+
+    <!-- BOTONES AUTH -->
+    <button id="loginBtn" onclick="location.href='login.html'">Login</button>
+    <button id="registroBtn" onclick="location.href='registro.html'">Registro</button>
+    <button id="logoutBtn" style="display:none;">Cerrar sesión</button>
+</div>
+
+<!-- ================= CONTENIDO ================= -->
+<h1>Bienvenido a VetLinares 🐶</h1>
+
+<img src="banner.png" alt="VetLinares">
+<p>Sistema de gestión de veterinarias en Linares</p>
+
+
+<script type="module">
+
+// ================= IMPORTS =================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, onAuthStateChanged, signOut } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import { getFirestore, collection, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+
+// ================= CONFIG =================
+const firebaseConfig = {
+  apiKey: "AIzaSyDMfiaPBt-Ipp0WjOFZJkFUOvKy207WDfU",
+  authDomain: "vetlinares-97df9.firebaseapp.com",
+  projectId: "vetlinares-97df9",
+  storageBucket: "vetlinares-97df9.firebasestorage.app",
+  messagingSenderId: "450660801982",
+  appId: "1:450660801982:web:8e870d08980e22d6336def"
+};
+
+
+// ================= INIT (IMPORTANTE ORDEN) =================
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app); // 👈 ahora sí está bien inicializado
+
+
+// ================= ELEMENTOS =================
+const logoutBtn = document.getElementById("logoutBtn");
+const loginBtn = document.getElementById("loginBtn");
+const registroBtn = document.getElementById("registroBtn");
+
+
+// ================= LOGOUT =================
+logoutBtn.addEventListener("click", () => {
+    signOut(auth)
+        .then(() => {
+            alert("Sesión cerrada");
+            window.location.href = "login.html";
+        })
+        .catch((error) => {
+            console.log("Error al cerrar sesión:", error);
+        });
+});
+
+
+// ================= 🔥 FUNCIÓN ADMIN =================
+// Busca en la colección "usuarios" si el usuario tiene rol admin
+async function esAdmin(email) {
+    const querySnapshot = await getDocs(collection(db, "usuarios"));
+
+    for (const doc of querySnapshot.docs) {
+        const data = doc.data();
+
+        if (data.email === email && data.rol === "admin") {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
+// ================= ESTADO DE USUARIO =================
+onAuthStateChanged(auth, async (user) => {
+
+    // 🔄 limpiar mensajes anteriores
+    document.querySelectorAll(".mensaje-user").forEach(e => e.remove());
+
+    // 🔄 eliminar botón admin duplicado si existe
+    const btnExistente = document.getElementById("adminBtn");
+    if (btnExistente) btnExistente.remove();
+
+    if (user) {
+        console.log("Usuario logueado:", user.email);
+
+        // 👤 mensaje usuario
+        const mensaje = document.createElement("p");
+        mensaje.classList.add("mensaje-user");
+        mensaje.innerHTML = "👤 Bienvenido: " + user.email;
+
+        document.body.prepend(mensaje);
+
+        // 🔘 mostrar logout
+        logoutBtn.style.display = "inline-block";
+
+        // 🔘 ocultar login/registro
+        loginBtn.style.display = "none";
+        registroBtn.style.display = "none";
+
+        // ================= 🔥 VERIFICAR ADMIN =================
+        const admin = await esAdmin(user.email);
+
+        if (admin) {
+            console.log("Usuario es ADMIN");
+
+            const btnAdmin = document.createElement("button");
+            btnAdmin.id = "adminBtn";
+            btnAdmin.innerText = "Panel Admin";
+
+            btnAdmin.onclick = () => {
+                window.location.href = "admin.html";
+            };
+
+            // 👇 se agrega al menú
+            document.querySelector(".menu").appendChild(btnAdmin);
+        }
+
+    } else {
+        console.log("No hay usuario logueado");
+
+        // 🔘 ocultar logout
+        logoutBtn.style.display = "none";
+
+        // 🔘 mostrar login/registro
+        loginBtn.style.display = "inline-block";
+        registroBtn.style.display = "inline-block";
+    }
+});
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Veterinarias</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="app-page">
+
+<div class="menu">
+    <button onclick="location.href='index.html'">Inicio</button>
+    <button>Veterinarias</button>
+    <button onclick="location.href='emergencias.html'">Emergencias</button>
+    <button onclick="location.href='contactos.html'">Contactos</button>
+</div>
+
+<p id="mensajeFiltro"></p>
+
+<h1>Página de Veterinarias 🐶</h1>
+<p>Aquí se mostrarán las veterinarias</p>
+
+<div id="contenedor-veterinarias"></div>
+
+<script type="module">
+
+//  IMPORTS 
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+//  CONFIG FIREBASE
+const firebaseConfig = {
+  apiKey: "AIzaSyDMfiaPBt-Ipp0WjOFZJkFUOvKy207WDfU",
+  authDomain: "vetlinares-97df9.firebaseapp.com",
+  projectId: "vetlinares-97df9",
+  storageBucket: "vetlinares-97df9.firebasestorage.app",
+  messagingSenderId: "450660801982",
+  appId: "1:450660801982:web:8e870d08980e22d6336def"
+};
+
+//  INICIALIZAR
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+//  BLOQUEO DE ACCESO
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        alert("Debes iniciar sesión");
+        window.location.href = "login.html";
+    }
+});
+
+//  FILTRO POR URL
+const params = new URLSearchParams(window.location.search);
+const urgencia = params.get("urgencia");
+
+const mensaje = document.getElementById("mensajeFiltro");
+
+//  CARGAR DATOS
+async function cargarVeterinarias() {
+    const querySnapshot = await getDocs(collection(db, "veterinarias"));
+
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+
+        console.log("DATA:", data);
+
+        const card = document.createElement("div");
+        card.classList.add("card");
+
+        card.innerHTML = `
+            <h2>${data.nombre}</h2>
+            <p><strong>Dirección:</strong> ${data.direccion}</p>
+            <p><strong>Comuna:</strong> ${data.comuna}</p>
+            <p class="${data.urgencias ? 'urgencia-si' : 'urgencia-no'}">
+                <strong>Urgencias:</strong> ${data.urgencias ? 'Sí atiende urgencias' : 'No atiende urgencias'}
+            </p>
+            <button class="btn" onclick="verDetalle('${doc.id}')">Ver más</button>
+        `;
+
+        const contenedor = document.getElementById("contenedor-veterinarias");
+        contenedor.appendChild(card);
+    });
+
+    //  FILTRO DESPUÉS DE CARGAR
+    if (urgencia === "alta") {
+        mensaje.innerHTML = "🚨 Mostrando veterinarias con atención de urgencias";
+
+        const tarjetas = document.querySelectorAll(".card");
+
+        tarjetas.forEach(card => {
+            const texto = card.innerText.toLowerCase();
+
+            if (!texto.includes("sí atiende urgencias")) {
+                card.style.display = "none";
+            }
+        });
+    }
+}
+
+//  EJECUTAR
+cargarVeterinarias();
+
+//  NAVEGAR A DETALLE
+window.verDetalle = function(id) {
+    window.location.href = `detalle.html?id=${id}`;
+};
+
+</script>
+
+</body>
+</html>

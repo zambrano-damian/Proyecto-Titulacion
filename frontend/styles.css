@@ -1,0 +1,187 @@
+/* 🔴 RESET GENERAL */
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f5f5f5;
+}
+
+/* 🖼️ IMAGEN */
+img {
+    width: 400px;
+    margin-top: 20px;
+}
+
+/* 🔵 BOTONES GENERALES */
+.btn {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #2e86de;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #1b4f72;
+}
+
+/* 🔵 MENÚ */
+.menu {
+    background-color: #2e86de;
+    padding: 10px;
+}
+
+.menu button {
+    margin: 5px;
+    background-color: white;
+    color: #2e86de;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.menu button:hover {
+    background-color: #d6eaf8;
+}
+
+/* 🏥 CARDS */
+.card {
+    background-color: white;
+    width: 60%;
+    margin: 20px auto;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: left;
+    box-shadow: 0 0 10px #cccccc;
+}
+
+/* 🟢 ESTADOS */
+.urgencia-si {
+    color: green;
+    font-weight: bold;
+}
+
+.urgencia-no {
+    color: red;
+    font-weight: bold;
+}
+
+/* 🚨 MENSAJE FILTRO */
+#mensajeFiltro {
+    font-weight: bold;
+    color: red;
+    margin-top: 10px;
+}
+
+/* 🔐 FORMULARIOS */
+.form-container {
+    width: 320px;
+    margin: 80px auto;
+    padding: 30px;
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    text-align: center;
+}
+
+.form-container input {
+    width: 90%;
+    padding: 10px;
+    margin: 10px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.form-container button {
+    width: 100%;
+    padding: 10px;
+    background: #2ecc71;
+    border: none;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.form-container button:hover {
+    background: #27ae60;
+}
+
+/* 🔠 TITULO APP */
+.titulo-app {
+    margin-bottom: 10px;
+    color: #2c3e50;
+}
+
+/* ========================= */
+/* 🔐 LOGIN / REGISTRO */
+/* ========================= */
+body.login-page {
+    background: url("banner.png") no-repeat center center/cover;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+body.login-page::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(8px);
+
+    z-index: -1;
+}
+
+/* ========================= */
+/* 🏠 HOME (INDEX) */
+/* ========================= */
+body.home-page {
+    background: url("banner.png") no-repeat center center/cover;
+    min-height: 100vh;
+}
+
+body.home-page::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(4px);
+
+    z-index: -1;
+}
+
+/* ========================= */
+/* 📱 APP (VETERINARIAS / EMERGENCIAS) */
+/* ========================= */
+body.app-page {
+    background: url("banner.png") no-repeat center center/cover;
+    min-height: 100vh;
+}
+
+body.app-page::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(2px);
+
+    z-index: -1;
+}
+
+
+/* ========================= */
+/* contacto*/
+/* ========================= */
+.card .btn {
+    display: inline-block;
+    margin-top: 10px;
+}

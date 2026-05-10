@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle Veterinaria</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="app-page">
+
+<div class="menu">
+    <button onclick="location.href='index.html'">Inicio</button>
+    <button onclick="location.href='veterinarias.html'">Veterinarias</button>
+    <button onclick="location.href='emergencias.html'">Emergencias</button>
+    <button onclick="location.href='contactos.html'">Contactos</button>
+</div>
+
+<h1>Ficha de Veterinaria 🐾</h1>
+
+<div id="detalle-container"></div>
+
+<!-- ================= RESEÑAS ================= -->
+
+<hr>
+
+<h2>Reseñas ⭐</h2>
+
+<div class="form-container">
+
+    <input type="text" id="comentario" placeholder="Escribe tu reseña">
+
+    <select id="estrellas">
+        <option value="5">⭐⭐⭐⭐⭐</option>
+        <option value="4">⭐⭐⭐⭐</option>
+        <option value="3">⭐⭐⭐</option>
+        <option value="2">⭐⭐</option>
+        <option value="1">⭐</option>
+    </select>
+
+    <button onclick="guardarResena()">Enviar reseña</button>
+
+</div>
+
+<div id="lista-resenas"></div>
+
+
+<script type="module">
+
+// ================= IMPORTS =================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc, collection, addDoc, getDocs, query, where } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+// ================= CONFIG =================
+const firebaseConfig = {
+  apiKey: "AIzaSyDMfiaPBt-Ipp0WjOFZJkFUOvKy207WDfU",
+  authDomain: "vetlinares-97df9.firebaseapp.com",
+  projectId: "vetlinares-97df9",
+  storageBucket: "vetlinares-97df9.appspot.com",
+  messagingSenderId: "450660801982",
+  appId: "1:450660801982:web:8e870d08980e22d6336def"
+};
+
+// ================= INIT =================
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+// ================= USUARIO =================
+let usuarioActual = null;
+
+// 🔒 BLOQUEAR SI NO ESTÁ LOGUEADO
+onAuthStateChanged(auth, (user) => {
+    if (!user) {
+        alert("Debes iniciar sesión");
+        window.location.href = "login.html";
+    } else {
+        usuarioActual = user.email;
+    }
+});
+
+// ================= OBTENER ID =================
+const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
+
+// ================= DETALLE =================
+async function cargarDetalle() {
+
+    const docRef = doc(db, "veterinarias", id);
+    const docSnap = await getDoc(docRef);
+
+    if (docSnap.exists()) {
+        const data = docSnap.data();
+
+        const container = document.getElementById("detalle-container");
+
+        container.innerHTML = `
+            <div class="card">
+                <h2>${data.nombre}</h2>
+                <p><strong>Dirección:</strong> ${data.direccion}</p>
+                <p><strong>Comuna:</strong> ${data.comuna}</p>
+
+                <p><strong>Estado:</strong> 
+                    <span style="color: ${data.urgencias ? 'green' : 'red'};">
+                        ● ${data.urgencias ? 'Abierto' : 'Cerrado'}
+                    </span>
+                </p>
+
+                <p><strong>Horario:</strong> Lunes a Viernes, 09:00 a 18:00</p>
+                <p><strong>Servicios:</strong> Consulta general, urgencias y vacunación</p>
+
+                <p class="${data.urgencias ? 'urgencia-si' : 'urgencia-no'}">
+                    <strong>Urgencias:</strong> ${data.urgencias ? 'Sí atiende urgencias' : 'No atiende urgencias'}
+                </p>
+
+                <button class="btn" onclick="history.back()">Volver</button>
+            </div>
+        `;
+    } else {
+        document.getElementById("detalle-container").innerHTML = "<p>No se encontró la veterinaria</p>";
+    }
+}
+
+// ================= GUARDAR RESEÑA =================
+window.guardarResena = async function() {
+
+    const comentario = document.getElementById("comentario").value;
+    const estrellas = document.getElementById("estrellas").value;
+
+    if (!usuarioActual) {
+        alert("Debes iniciar sesión");
+        return;
+    }
+
+    if (!comentario) {
+        alert("Escribe una reseña");
+        return;
+    }
+
+    await addDoc(collection(db, "resenas"), {
+        veterinariaId: id,
+        usuario: usuarioActual,
+        comentario: comentario,
+        estrellas: Number(estrellas) // 👈 importante
+    });
+
+    alert("Reseña guardada ⭐");
+
+    document.getElementById("comentario").value = "";
+
+    cargarResenas();
+};
+
+// ================= MOSTRAR RESEÑAS =================
+async function cargarResenas() {
+
+    const contenedor = document.getElementById("lista-resenas");
+    contenedor.innerHTML = "";
+
+    const q = query(
+        collection(db, "resenas"),
+        where("veterinariaId", "==", id)
+    );
+
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach((doc) => {
+
+        const data = doc.data();
+
+        const div = document.createElement("div");
+        div.classList.add("card");
+
+        div.innerHTML = `
+            <p><strong>${data.usuario}</strong></p>
+            <p>${"⭐".repeat(data.estrellas)}</p>
+            <p>${data.comentario}</p>
+        `;
+
+        contenedor.appendChild(div);
+    });
+}
+
+// ================= INICIO =================
+cargarDetalle();
+cargarResenas();
+
+</script>
+
+</body>
+</html>

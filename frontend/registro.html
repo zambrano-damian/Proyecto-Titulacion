@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="login-page">
+
+<div class="form-container">
+
+    <h1>Registro 👤</h1>
+    <h2 class="titulo-app">VetLinares 🐶</h2>
+
+    <input type="email" id="email" placeholder="Correo">
+    <input type="password" id="password" placeholder="Contraseña">
+
+    <button onclick="registrar()">Registrarse</button>
+
+    <p>¿Ya tienes cuenta?</p>
+    <button onclick="location.href='login.html'">Iniciar sesión</button>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+//  CONFIG CORRECTA (IGUAL EN TODAS LAS PÁGINAS)
+const firebaseConfig = {
+  apiKey: "AIzaSyDMfiaPBt-Ipp0WjOFZJkFUOvKy207WDfU",
+  authDomain: "vetlinares-97df9.firebaseapp.com",
+  projectId: "vetlinares-97df9",
+  storageBucket: "vetlinares-97df9.firebasestorage.app",
+  messagingSenderId: "450660801982",
+  appId: "1:450660801982:web:8e870d08980e22d6336def"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+//  FUNCIÓN REGISTRO
+window.registrar = async function() {
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    //  VALIDACIONES
+    if (!email || !password) {
+        alert("Completa todos los campos");
+        return;
+    }
+
+    if (password.length < 6) {
+        alert("La contraseña debe tener al menos 6 caracteres");
+        return;
+    }
+
+    try {
+        await createUserWithEmailAndPassword(auth, email, password);
+
+        alert("Usuario creado correctamente ✅");
+
+        //  redirige a login
+        window.location.href = "login.html";
+
+    } catch (error) {
+        alert("Error: " + error.message);
+    }
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body class="login-page">
+
+<div class="form-container">
+
+    <h1>Iniciar Sesión 🔐</h1>
+    <h2 class="titulo-app">VetLinares 🐶</h2>
+
+    <input type="email" id="email" placeholder="Correo">
+    <input type="password" id="password" placeholder="Contraseña">
+
+    <button onclick="login()">Ingresar</button>
+
+    <p id="mensaje"></p>
+
+    <!-- boton de registro para nuevos usuarios -->
+    <p>¿No tienes cuenta?</p>
+    <button onclick="location.href='registro.html'">Crear cuenta</button>
+
+</div>
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword } 
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDMfiaPBt-Ipp0WjOFZJkFUOvKy207WDfU",
+  authDomain: "vetlinares-97df9.firebaseapp.com",
+  projectId: "vetlinares-97df9",
+  storageBucket: "vetlinares-97df9.firebasestorage.app",
+  messagingSenderId: "450660801982",
+  appId: "1:450660801982:web:8e870d08980e22d6336def"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+
+window.login = async function() {
+
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    try {
+        await signInWithEmailAndPassword(auth, email, password);
+
+        document.getElementById("mensaje").innerText = "Login exitoso ✅";
+
+        // redirigir
+        window.location.href = "veterinarias.html";
+
+    } catch (error) {
+        document.getElementById("mensaje").innerText = "Error: " + error.message;
+    }
+}
+
+</script>
+
+</body>
+</html>
