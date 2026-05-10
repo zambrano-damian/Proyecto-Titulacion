@@ -2,7 +2,7 @@
 
 Sistema web orientado a la gestión y consulta de información veterinaria en la comuna de Linares.
 
-## 🚀 Funcionalidades
+##  Funcionalidades
 
 - Visualización de veterinarias
 - Filtro por atención de urgencias
@@ -12,14 +12,14 @@ Sistema web orientado a la gestión y consulta de información veterinaria en la
 - Visualización de detalles
 - Sistema de reseñas
 
-## 🛠 Tecnologías utilizadas
+##  Tecnologías utilizadas
 
 - HTML
 - CSS
 - JavaScript
 - Firebase (Auth + Firestore)
 
-## 📌 Descripción
+##  Descripción
 
 VetLinares permite a los usuarios encontrar rápidamente veterinarias en Linares, visualizar sus servicios, verificar disponibilidad de urgencias y dejar reseñas.
 
