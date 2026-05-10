@@ -1,17 +1,30 @@
-<<<<<<< HEAD
-# VetLinares
+# 🐶 VetLinares
 
-Sistema web para la gestión de veterinarias en Linares.
+Sistema web orientado a la gestión y consulta de información veterinaria en la comuna de Linares.
 
-## Tecnologías
+## 🚀 Funcionalidades
+
+- Visualización de veterinarias
+- Filtro por atención de urgencias
+- Registro e inicio de sesión de usuarios
+- Panel administrador
+- Agregar veterinarias
+- Visualización de detalles
+- Sistema de reseñas
+
+## 🛠 Tecnologías utilizadas
+
 - HTML
 - CSS
 - JavaScript
-- SQL
+- Firebase (Auth + Firestore)
 
-## Descripción
-Permite visualizar veterinarias, servicios y gestionar emergencias.
-=======
-# Proyecto-Titulacion-
-Proyecto VetLinares: sistema web orientado a la gestión y consulta de información veterinaria en la comuna de Linares. Permite visualizar veterinarias, servicios, horarios, reseñas y gestionar emergencias mediante un modelo de datos relacional SQL y arquitectura cliente-servidor.
->>>>>>> 1c805137dc4cfcac21e02857e67b8c8a810c4736
+## 📌 Descripción
+
+VetLinares permite a los usuarios encontrar rápidamente veterinarias en Linares, visualizar sus servicios, verificar disponibilidad de urgencias y dejar reseñas.
+
+El sistema incluye un panel administrador que permite gestionar la información del sistema.
+
+## 👤 Autor
+
+Damián Zambrano
